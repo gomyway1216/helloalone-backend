@@ -1,13 +1,9 @@
 package com.yudaiyaguchi.helloalonebackend;
 
 import java.util.concurrent.ExecutionException;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-
 import com.yudaiyaguchi.helloalonebackend.firebase.Task;
 import com.yudaiyaguchi.helloalonebackend.firebase.TaskService;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

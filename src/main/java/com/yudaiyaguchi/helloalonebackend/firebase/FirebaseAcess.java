@@ -1,11 +1,11 @@
 package com.yudaiyaguchi.helloalonebackend.firebase;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Base64;
 
 import javax.annotation.PostConstruct;
 
@@ -24,24 +24,13 @@ public class FirebaseAcess {
 	
 	@PostConstruct
 	public void init() throws IOException {
-		
-		System.out.println(envVals.getProperty("type"));
-		
-		// Use a service account
-//		InputStream serviceAccount = new FileInputStream("src/main/resources/yudai-blog-firebase-adminsdk.json");
-//		Map<String, Integer> map = new HashMap<>();
-//		GoogleCredentials credentials = GoogleCredentials.fromStream(map.keySet().stream());
-//		FirebaseOptions options = new FirebaseOptions.Builder()
-//		    .setCredentials(credentials)
-//		    .build();
-//		FirebaseApp.initializeApp(options);
-		
-//		FirebaseOptions firebaseOptions = new FirebaseOptions.Builder()
-//				.setProjectId("yudai-blog")
-//				.set
-//                .setApiKey("AIzaSyBys-YxxE7kON5PxZc5aY6JwVvreyx_owc")
-//                .setDatabaseUrl(databaseUrl)
-//                .build();
+		String credential = envVals.getProperty("firebase_credential");
+		byte[] decodedBytes = Base64.getDecoder().decode(credential);
+		InputStream is = new ByteArrayInputStream(decodedBytes);
+		GoogleCredentials credentials = GoogleCredentials.fromStream(is);
+		FirebaseOptions options = new FirebaseOptions.Builder()
+			    .setCredentials(credentials)
+			    .build();
+			FirebaseApp.initializeApp(options);
 	}
-
 }
