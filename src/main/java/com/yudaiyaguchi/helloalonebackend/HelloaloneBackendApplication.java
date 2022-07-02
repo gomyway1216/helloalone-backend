@@ -12,13 +12,12 @@ import com.yudaiyaguchi.helloalonebackend.firebase.TaskService;
 @EnableAutoConfiguration
 @ComponentScan(basePackages = "com.yudaiyaguchi.helloalonebackend")
 public class HelloaloneBackendApplication {
-	
-	@Autowired
-	TaskService taskService;
-	
 
-	public static void main(String[] args) {
-		SpringApplication.run(HelloaloneBackendApplication.class, args);
-	}
+    @Autowired
+    TaskService taskService;
+
+    public static void main(String[] args) {
+        SpringApplication.run(HelloaloneBackendApplication.class, args);
+    }
 
 }

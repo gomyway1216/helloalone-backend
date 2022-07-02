@@ -30,39 +30,63 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
 		<!-- <dependency>
 		    <groupId>com.google.cloud</groupId>
 		    <artifactId>spring-cloud-gcp-starter-firestore</artifactId>
 		</dependency> -->
 		<dependency>
-		  <groupId>com.google.firebase</groupId>
-		  <artifactId>firebase-admin</artifactId>
-		  <version>8.0.0</version>
+		  	<groupId>com.google.firebase</groupId>
+		  	<artifactId>firebase-admin</artifactId>
+		  	<version>8.0.0</version>
 		</dependency>
-<!-- 		<dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.9.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/javax.validation/validation-api -->
+		<dependency>
+		    <groupId>javax.validation</groupId>
+		    <artifactId>validation-api</artifactId>
+		    <version>2.0.1.Final</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-tx -->
+		<dependency>
 		    <groupId>org.springframework</groupId>
-		    <artifactId>spring-webmvc</artifactId>
-		    <version>5.3.8</version>
-		</dependency> -->
+		    <artifactId>spring-tx</artifactId>
+		    <version>5.3.9</version>
+		</dependency>
+		<dependency>
+		    <groupId>jakarta.xml.bind</groupId>
+		    <artifactId>jakarta.xml.bind-api</artifactId>
+		    <version>2.3.2</version>
+		</dependency>
 	</dependencies>
-	
-	<!-- <dependencyManagement>
-	    <dependencies>
-	        <dependency>
-	            <groupId>com.google.cloud</groupId>
-	            <artifactId>spring-cloud-gcp-dependencies</artifactId>
-	            <version>2.0.3</version>
-	            <type>pom</type>
-	            <scope>import</scope>
-	        </dependency>
-	    </dependencies>
-	</dependencyManagement> -->
-
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+			  <groupId>net.revelc.code.formatter</groupId>
+			  <artifactId>formatter-maven-plugin</artifactId>
+			  <version>2.18.0</version>
+			  <configuration>
+			    <directories>
+			      <directory>${project.build.sourceDirectory}</directory>
+			      <directory>${project.build.directory}/generated-sources</directory>
+			    </directories>
+			  </configuration>
 			</plugin>
 		</plugins>
 	</build>
