@@ -18,19 +18,17 @@ import com.google.firebase.FirebaseOptions;
 
 @Service
 public class FirebaseAcess {
-	
-	@Autowired
-	private Environment envVals;
-	
-	@PostConstruct
-	public void init() throws IOException {
-		String credential = envVals.getProperty("firebase_credential");
-		byte[] decodedBytes = Base64.getDecoder().decode(credential);
-		InputStream is = new ByteArrayInputStream(decodedBytes);
-		GoogleCredentials credentials = GoogleCredentials.fromStream(is);
-		FirebaseOptions options = new FirebaseOptions.Builder()
-			    .setCredentials(credentials)
-			    .build();
-			FirebaseApp.initializeApp(options);
-	}
+
+    @Autowired
+    private Environment envVals;
+
+    @PostConstruct
+    public void init() throws IOException {
+        String credential = envVals.getProperty("firebase_credential");
+        byte[] decodedBytes = Base64.getDecoder().decode(credential);
+        InputStream is = new ByteArrayInputStream(decodedBytes);
+        GoogleCredentials credentials = GoogleCredentials.fromStream(is);
+        FirebaseOptions options = new FirebaseOptions.Builder().setCredentials(credentials).build();
+        FirebaseApp.initializeApp(options);
+    }
 }
