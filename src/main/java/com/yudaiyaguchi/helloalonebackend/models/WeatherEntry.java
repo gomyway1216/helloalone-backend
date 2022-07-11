@@ -1,7 +1,7 @@
 package com.yudaiyaguchi.helloalonebackend.models;
 
-public class FoodEntity {
-	
+public class WeatherEntry {
+
 	private String id;
 	private String name;
 	
@@ -19,5 +19,5 @@ public class FoodEntity {
 	
 	public void setName(String name) {
 		this.name = name;
-	}
+	}	
 }

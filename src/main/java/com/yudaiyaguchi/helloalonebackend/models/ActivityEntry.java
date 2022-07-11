@@ -2,17 +2,15 @@ package com.yudaiyaguchi.helloalonebackend.models;
 
 import java.util.Date;
 import java.util.List;
-
 import com.google.cloud.firestore.GeoPoint;
-import com.yudaiyaguchi.helloalonebackend.enums.Weather;
 
-public class ActivityEntity {
+public class ActivityEntry {
 
 	private String id;
 	private GeoPoint location;
 	private Date startTime;
 	private Date endTime;
-	private Weather weather;
+	private String weather;
 	private List<String> people;
 	// list of activity type ids
 	private List<String> activityTypes;
@@ -51,11 +49,11 @@ public class ActivityEntity {
 		this.endTime = endTime;
 	}
 	
-	public Weather getWeather() {
+	public String getWeather() {
 		return weather;
 	}
 	
-	public void setWeather(Weather weather) {
+	public void setWeather(String weather) {
 		this.weather = weather;
 	}
 	

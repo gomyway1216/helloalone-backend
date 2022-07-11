@@ -1,6 +1,6 @@
 package com.yudaiyaguchi.helloalonebackend.models;
 
-public class NationalityEntiry {
+public class FoodEntry {
 	
 	private String id;
 	private String name;
