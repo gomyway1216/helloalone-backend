@@ -7,7 +7,7 @@ public class ActivityTypeEntry {
 	private String id;
 	private String name;
 	// list of activity category entry ids
-	private List<String> activityCategory;
+	private List<String> activityCategoryId;
 	
 	public String getId() {
 		return id;
@@ -25,11 +25,11 @@ public class ActivityTypeEntry {
 		this.name = name;
 	}
 	
-	public List<String> getActivityCategory() {
-		return activityCategory;
+	public List<String> getActivityCategoryId() {
+		return activityCategoryId;
 	}
 	
-	public void setActivityCategory(List<String> activityCategory) {
-		this.activityCategory = activityCategory;
+	public void setActivityCategoryId(List<String> activityCategoryId) {
+		this.activityCategoryId = activityCategoryId;
 	}
 }

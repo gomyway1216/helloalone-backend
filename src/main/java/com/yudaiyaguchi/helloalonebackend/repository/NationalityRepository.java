@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.DocumentReference;
@@ -13,6 +14,7 @@ import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
+import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.cloud.FirestoreClient;
 import com.yudaiyaguchi.helloalonebackend.models.NationalityEntry;
 
@@ -77,5 +79,39 @@ public class NationalityRepository {
             LOGGER.error("NationalityEntry insertion is failing", e);
             throw e;
         }
+    }
+    
+    public String updateNationalityEntry(NationalityEntry nationalityEntry) throws Exception {
+    	if(!StringUtils.hasLength(nationalityEntry.getId())) {
+    		throw new Exception("Entry Id cannot be null for update operation!");
+    	}
+    	
+        Firestore db = FirestoreClient.getFirestore();
+        CollectionReference nationalityEntries = db.collection("common").document("nationality").collection("nationalityCollection");
+        try {
+            ApiFuture<WriteResult> res = nationalityEntries.document(nationalityEntry.getId()).set(nationalityEntry);
+            return res.get().getUpdateTime().toString();
+        } catch (Exception e) {
+        	// TODO Handle different type of exceptions
+            LOGGER.error("NationalityEntry update is failing", e);
+            throw e;
+        }
+    }
+    
+    public String deleteNationalityEntry(String id) throws Exception {
+    	if(!StringUtils.hasLength(id)) {
+    		throw new Exception("Entry Id cannot be null or empty for delete operation!");
+    	}
+    	
+    	Firestore db = FirestoreClient.getFirestore();
+    	CollectionReference nationalityEntries = db.collection("common").document("nationality").collection("nationalityCollection");
+    	try {
+    		ApiFuture<WriteResult> res = nationalityEntries.document(id).delete();
+    		return res.get().getUpdateTime().toString();
+    	} catch(Exception e) {
+    		// TODO Handle different type of exceptions
+    		LOGGER.error("NationalityEntry delete is failing", e);
+    		throw e;
+    	}
     }
 }

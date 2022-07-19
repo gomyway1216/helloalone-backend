@@ -1,13 +1,13 @@
-package com.yudaiyaguchi.helloalonebackend.models;
+package com.yudaiyaguchi.helloalonebackend.payload.request;
 
 import java.util.Date;
 import java.util.List;
+import javax.validation.constraints.NotBlank;
 import com.google.cloud.firestore.GeoPoint;
-import com.yudaiyaguchi.helloalonebackend.payload.request.ActivityEntryRequest;
 
-public class ActivityEntry {
+public class ActivityEntryRequest {
 
-	private String id;
+	@NotBlank
 	private String userId;
 	private GeoPoint location;
 	private Date startTime;
@@ -16,32 +16,11 @@ public class ActivityEntry {
 	// list of friend ids that attended the activity
 	private List<String> friendIds;
 	// list of activity type ids
+	@NotBlank
 	private List<String> activityTypeIds;
 	private List<String> links;
+	@NotBlank
 	private String description;
-	
-	public ActivityEntry() {
-	}
-	
-	public ActivityEntry(ActivityEntryRequest request) {
-		this.userId = request.getUserId();
-		this.location = request.getLocation();
-		this.startTime = new Date();
-		this.endTime = new Date();
-		this.weatherId = request.getWeatherId();
-		this.friendIds = request.getFriendIds();
-		this.activityTypeIds = request.getActivityTypeIds();
-		this.links = request.getLinks();
-		this.description = request.getDescription();
-	}
-	
-	public String getId() {
-		return id;
-	}
-	
-	public void setId(String id) {
-		this.id = id;
-	}
 	
 	public String getUserId() {
 		return userId;
@@ -95,7 +74,7 @@ public class ActivityEntry {
 		return activityTypeIds;
 	}
 	
-	public void setActivityTypes(List<String> activityTypeIds) {
+	public void setActivityTypeIds(List<String> activityTypeIds) {
 		this.activityTypeIds = activityTypeIds;
 	}
 	

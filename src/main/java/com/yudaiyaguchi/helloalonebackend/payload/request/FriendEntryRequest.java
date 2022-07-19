@@ -1,18 +1,22 @@
-package com.yudaiyaguchi.helloalonebackend.models;
+package com.yudaiyaguchi.helloalonebackend.payload.request;
+
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import javax.validation.constraints.NotBlank;
 import com.google.cloud.firestore.GeoPoint;
-import com.yudaiyaguchi.helloalonebackend.payload.request.FriendEntryRequest;
 
-public class FriendEntry {
+public class FriendEntryRequest {
 	
-	private String id;
+	@NotBlank
 	private String firstName;
 	private String middleName;
+	@NotBlank
 	private String lastName;
+	@NotBlank
 	private String firstNameNative;
+	@NotBlank
 	private String lastNameNative;
 	private String firstNameNativePhonetic;
 	private String lastNameNativePhonetic;
@@ -38,44 +42,6 @@ public class FriendEntry {
 	private List<String> collegeIds;
 	// list of job ids
 	private List<String> jobIds;
-	
-	public FriendEntry() {
-	}
-	
-	public FriendEntry(FriendEntryRequest request) {
-		this.firstName = request.getFirstName();
-		this.middleName = request.getMiddleName();
-		this.lastName = request.getLastName();
-		this.firstNameNative = request.getFirstNameNative();
-		this.lastNameNative = request.getLastNameNative();
-		this.firstNameNativePhonetic = request.getFirstNameNativePhonetic();
-		this.lastNameNativePhonetic = request.getLastNameNativePhonetic();
-		this.birthday = request.getBirthday();
-		this.profileImageLink = request.getProfileImageLink();
-		this.otherImageLinks = request.getOtherImageLinks();
-		this.shortDescription = request.getShortDescription();
-		this.description = request.getDescription();
-		this.socialMedias = request.getSocialMedias();
-		this.phoneNumber = request.getPhoneNumber();
-		this.emailAddress = request.getEmailAddress();
-		this.created = new Date();
-		this.lastUpdated = new Date();
-		this.locationMet = request.getLocationMet();
-		this.activityIds = request.getActivityIds();
-		this.nationalityId = request.getNationalityId();
-		this.favoriteFoodIds = request.getFavoriteFoodIds();
-		this.hobbyIds = request.getHobbyIds();
-		this.collegeIds = request.getCollegeIds();
-		this.jobIds = request.getJobIds();
-	}
-	
-	public String getId() {
-		return id;
-	}
-	
-	public void setId(String id) {
-		this.id = id;
-	}
 	
 	public String getFirstName() {
 		return firstName;

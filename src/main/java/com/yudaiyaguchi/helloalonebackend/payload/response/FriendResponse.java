@@ -1,12 +1,19 @@
-package com.yudaiyaguchi.helloalonebackend.models;
+package com.yudaiyaguchi.helloalonebackend.payload.response;
+
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import com.google.cloud.firestore.GeoPoint;
-import com.yudaiyaguchi.helloalonebackend.payload.request.FriendEntryRequest;
+import com.yudaiyaguchi.helloalonebackend.models.ActivityEntry;
+import com.yudaiyaguchi.helloalonebackend.models.ActivityTypeEntry;
+import com.yudaiyaguchi.helloalonebackend.models.CollegeEntry;
+import com.yudaiyaguchi.helloalonebackend.models.FoodEntry;
+import com.yudaiyaguchi.helloalonebackend.models.FriendEntry;
+import com.yudaiyaguchi.helloalonebackend.models.JobEntry;
+import com.yudaiyaguchi.helloalonebackend.models.NationalityEntry;
 
-public class FriendEntry {
+public class FriendResponse {
 	
 	private String id;
 	private String firstName;
@@ -27,46 +34,48 @@ public class FriendEntry {
 	private Date created;
 	private Date lastUpdated;
 	private GeoPoint locationMet;
-	// list of activity ids
-	private List<String> activityIds;
-	private String nationalityId;
-	// list of favorite food ids
-	private List<String> favoriteFoodIds;
-	// list of activityType ids for hobby
-	private List<String> hobbyIds;
-	// list of college ids
-	private List<String> collegeIds;
-	// list of job ids
-	private List<String> jobIds;
+	// list of activities
+	private List<ActivityEntry> activities;
+	private NationalityEntry nationality;
+	// list of favorite foods
+	private List<FoodEntry> favoriteFoods;
+	// list of activity types for hobby
+	private List<ActivityTypeEntry> hobbies;
+	// list of colleges
+	private List<CollegeEntry> colleges;
+	// list of jobs
+	private List<JobEntry> jobs;
 	
-	public FriendEntry() {
+	public FriendResponse() {
 	}
 	
-	public FriendEntry(FriendEntryRequest request) {
-		this.firstName = request.getFirstName();
-		this.middleName = request.getMiddleName();
-		this.lastName = request.getLastName();
-		this.firstNameNative = request.getFirstNameNative();
-		this.lastNameNative = request.getLastNameNative();
-		this.firstNameNativePhonetic = request.getFirstNameNativePhonetic();
-		this.lastNameNativePhonetic = request.getLastNameNativePhonetic();
-		this.birthday = request.getBirthday();
-		this.profileImageLink = request.getProfileImageLink();
-		this.otherImageLinks = request.getOtherImageLinks();
-		this.shortDescription = request.getShortDescription();
-		this.description = request.getDescription();
-		this.socialMedias = request.getSocialMedias();
-		this.phoneNumber = request.getPhoneNumber();
-		this.emailAddress = request.getEmailAddress();
-		this.created = new Date();
-		this.lastUpdated = new Date();
-		this.locationMet = request.getLocationMet();
-		this.activityIds = request.getActivityIds();
-		this.nationalityId = request.getNationalityId();
-		this.favoriteFoodIds = request.getFavoriteFoodIds();
-		this.hobbyIds = request.getHobbyIds();
-		this.collegeIds = request.getCollegeIds();
-		this.jobIds = request.getJobIds();
+	public FriendResponse(FriendEntry friendEntry, List<ActivityEntry> activities, NationalityEntry nationality, 
+			List<FoodEntry> favoriteFoods, List<ActivityTypeEntry> hobbies, List<CollegeEntry> colleges, List<JobEntry> jobs) {
+		this.id = friendEntry.getId();
+		this.firstName = friendEntry.getFirstName();
+		this.middleName = friendEntry.getMiddleName();
+		this.lastName = friendEntry.getLastName();
+		this.firstNameNative = friendEntry.getFirstNameNative();
+		this.lastNameNative = friendEntry.getLastNameNative();
+		this.firstNameNativePhonetic = friendEntry.getFirstNameNativePhonetic();
+		this.lastNameNativePhonetic = friendEntry.getLastNameNativePhonetic();
+		this.birthday = friendEntry.getBirthday();
+		this.profileImageLink = friendEntry.getProfileImageLink();
+		this.otherImageLinks = friendEntry.getOtherImageLinks();
+		this.shortDescription = friendEntry.getShortDescription();
+		this.description = friendEntry.getDescription();
+		this.socialMedias = friendEntry.getSocialMedias();
+		this.phoneNumber = friendEntry.getPhoneNumber();
+		this.emailAddress = friendEntry.getEmailAddress();
+		this.created = friendEntry.getCreated();
+		this.lastUpdated = friendEntry.getLastUpdated();
+		this.locationMet = friendEntry.getLocationMet();
+		this.activities = activities;
+		this.nationality = nationality;
+		this.favoriteFoods = favoriteFoods;
+		this.hobbies = hobbies;
+		this.colleges = colleges;
+		this.jobs = jobs;
 	}
 	
 	public String getId() {
@@ -121,7 +130,7 @@ public class FriendEntry {
 		return firstNameNativePhonetic;
 	}
 	
-	public void setFirstNameNativePhonetic(String firstNameNativePhonetic) {
+	public void setFirstNamePhonetic(String firstNameNativePhonetic) {
 		this.firstNameNativePhonetic = firstNameNativePhonetic;
 	}
 	
@@ -220,51 +229,51 @@ public class FriendEntry {
 		this.locationMet = locationMet;
 	}
 	
-	public List<String> getActivityIds() {
-		return activityIds;
+	public List<ActivityEntry> getActivities() {
+		return activities;
 	}
 	
-	public void setActivityIds(List<String> activityIds) {
-		this.activityIds = activityIds;
+	public void setActivities(List<ActivityEntry> activities) {
+		this.activities = activities;
 	}
 	
-	public String getNationalityId() {
-		return nationalityId;
+	public NationalityEntry getNationality() {
+		return nationality;
 	}
 	
-	public void setNationalityId(String nationalityId) {
-		this.nationalityId = nationalityId;
+	public void setNationality(NationalityEntry nationality) {
+		this.nationality = nationality;
 	}
 	
-	public List<String> getFavoriteFoodIds() {
-		return favoriteFoodIds;
+	public List<FoodEntry> getFavoriteFoods() {
+		return favoriteFoods;
 	}
 	
-	public void setFavoriteFoodIds(List<String> favoriteFoodIds) {
-		this.favoriteFoodIds = favoriteFoodIds;
+	public void setFavoriteFoods(List<FoodEntry> favoriteFoods) {
+		this.favoriteFoods = favoriteFoods;
 	}
 	
-	public List<String> getHobbyIds() {
-		return hobbyIds;
+	public List<ActivityTypeEntry> getHobbies() {
+		return hobbies;
 	}
 	
-	public void setHobbyIds(List<String> hobbyIds) {
-		this.hobbyIds = hobbyIds;
+	public void setHobbies(List<ActivityTypeEntry> hobbies) {
+		this.hobbies = hobbies;
 	}
 	
-	public List<String> getCollegeIds() {
-		return collegeIds;
+	public List<CollegeEntry> getColleges() {
+		return colleges;
 	}
 	
-	public void setCollegeIds(List<String> collegeIds) {
-		this.collegeIds = collegeIds;
+	public void setColleges(List<CollegeEntry> colleges) {
+		this.colleges = colleges;
 	}
 	
-	public List<String> getJobIds() {
-		return jobIds;
+	public List<JobEntry> getJobs() {
+		return jobs;
 	}
 	
-	public void setJobIds(List<String> jobIds) {
-		this.jobIds = jobIds;
+	public void setJobs(List<JobEntry> jobs) {
+		this.jobs = jobs;
 	}
 }
