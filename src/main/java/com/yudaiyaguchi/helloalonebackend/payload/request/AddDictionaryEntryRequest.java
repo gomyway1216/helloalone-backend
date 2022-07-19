@@ -2,7 +2,6 @@ package com.yudaiyaguchi.helloalonebackend.payload.request;
 
 import java.util.List;
 import javax.validation.constraints.NotBlank;
-import com.yudaiyaguchi.helloalonebackend.models.TagEntry;
 
 public class AddDictionaryEntryRequest {
 	
