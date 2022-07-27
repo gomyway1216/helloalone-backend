@@ -1,9 +1,18 @@
 package com.yudaiyaguchi.helloalonebackend.models;
 
+import com.yudaiyaguchi.helloalonebackend.payload.request.ActivityCategoryEntryRequest;
+
 public class ActivityCategoryEntry {
 	
 	private String id;
 	private String name;
+	
+	public ActivityCategoryEntry() {
+	}
+	
+	public ActivityCategoryEntry(ActivityCategoryEntryRequest request) {
+		this.name = request.getName();
+	}
 	
 	public String getId() {
 		return id;

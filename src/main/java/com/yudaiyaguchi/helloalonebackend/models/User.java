@@ -24,14 +24,18 @@ public class User {
     private String password;
 
     private Map<String, String> friendFeatureList;
+    
+    @NotBlank
+    private boolean admin;
 
-    public User() {
+	public User() {
     }
 
     public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.admin = false;
     }
 
     public String getId() {
@@ -73,4 +77,12 @@ public class User {
     public void setFriendFeatureList(Map<String, String> friendFeatureList) {
         this.friendFeatureList = friendFeatureList;
     }
+    
+	public boolean isAdmin() {
+		return admin;
+	}
+
+	public void setAdmin(boolean admin) {
+		this.admin = admin;
+	}    
 }

@@ -16,6 +16,7 @@ public class FriendEntry {
 	private String lastNameNative;
 	private String firstNameNativePhonetic;
 	private String lastNameNativePhonetic;
+	private String gender;
 	private Date birthday;
 	private String profileImageLink;
 	private List<String> otherImageLinks;
@@ -27,8 +28,6 @@ public class FriendEntry {
 	private Date created;
 	private Date lastUpdated;
 	private GeoPoint locationMet;
-	// list of activity ids
-	private List<String> activityIds;
 	private String nationalityId;
 	// list of favorite food ids
 	private List<String> favoriteFoodIds;
@@ -50,6 +49,7 @@ public class FriendEntry {
 		this.lastNameNative = request.getLastNameNative();
 		this.firstNameNativePhonetic = request.getFirstNameNativePhonetic();
 		this.lastNameNativePhonetic = request.getLastNameNativePhonetic();
+		this.gender = request.getGender();
 		this.birthday = request.getBirthday();
 		this.profileImageLink = request.getProfileImageLink();
 		this.otherImageLinks = request.getOtherImageLinks();
@@ -61,7 +61,6 @@ public class FriendEntry {
 		this.created = new Date();
 		this.lastUpdated = new Date();
 		this.locationMet = request.getLocationMet();
-		this.activityIds = request.getActivityIds();
 		this.nationalityId = request.getNationalityId();
 		this.favoriteFoodIds = request.getFavoriteFoodIds();
 		this.hobbyIds = request.getHobbyIds();
@@ -132,6 +131,15 @@ public class FriendEntry {
 	public void setLastNameNativePhonetic(String lastNameNativePhonetic) {
 		this.lastNameNativePhonetic = lastNameNativePhonetic;
 	}
+	
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+	
 	public Date getBirthday() {
 		return birthday;
 	}
@@ -218,14 +226,6 @@ public class FriendEntry {
 	
 	public void setLocationMet(GeoPoint locationMet) {
 		this.locationMet = locationMet;
-	}
-	
-	public List<String> getActivityIds() {
-		return activityIds;
-	}
-	
-	public void setActivityIds(List<String> activityIds) {
-		this.activityIds = activityIds;
 	}
 	
 	public String getNationalityId() {

@@ -10,7 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -70,7 +72,7 @@ public class FriendController {
         		FriendResponse response = null;
         		try {
         			response = new FriendResponse(entry, 
-        				this.activityRepository.getActivityEntries(userId, entry.getActivityIds()),
+        				this.activityRepository.getActivityEntries(userId),
         				this.nationalityRepository.getNationalityEntryById(entry.getNationalityId()),
         				this.foodRepository.getFoodEntries(),
         				this.activityRepository.getActivityTypeEntries(entry.getHobbyIds()),
@@ -83,20 +85,20 @@ public class FriendController {
         	});
         } catch (Exception e) {
             LOGGER.warn("error finding record for user: {} Error: {}", userId, e);
-            ResponseEntity.badRequest().body(new MessageResponse("Error: Unable to get FriendEntries"));
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Unable to get FriendEntries"));
         }
         return ResponseEntity.ok(friendResponseList);
     }
     
-    @GetMapping("/{responseEntryId}")
-    public ResponseEntity<?> getFriendEntity(HttpServletRequest request, @Valid String responseEntryId) {
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getFriendEntity(HttpServletRequest request, @PathVariable("id") String id) {
     	String jwt = jwtUtils.parseJwt(request);
         String userId = userRepository.getUserId(jwt);
         FriendResponse response = null;
         try {
-        	FriendEntry entry = this.friendRepository.getFriendEntryById(userId, responseEntryId);
+        	FriendEntry entry = this.friendRepository.getFriendEntryById(userId, id);
 			response = new FriendResponse(entry, 
-    				this.activityRepository.getActivityEntries(userId, entry.getActivityIds()),
+    				this.activityRepository.getActivityEntries(userId),
     				this.nationalityRepository.getNationalityEntryById(entry.getNationalityId()),
     				this.foodRepository.getFoodEntries(),
     				this.activityRepository.getActivityTypeEntries(entry.getHobbyIds()),
@@ -104,12 +106,12 @@ public class FriendController {
     				this.jobRepository.getJobEntries(entry.getJobIds()));
         } catch (Exception e) {
         	LOGGER.warn("error finding friend entry for user: {} Error: {}", userId, e);
-        	ResponseEntity.badRequest().body(new MessageResponse("Error: Unable to get FriendEntry"));
+        	return ResponseEntity.badRequest().body(new MessageResponse("Error: Unable to get FriendEntry"));
         }
         return ResponseEntity.ok(response);
     }
     
-    @PostMapping("/insert")
+    @PostMapping("/")
     public ResponseEntity<?> insertFriendEntity(HttpServletRequest request, @Valid @RequestBody FriendEntryRequest entRequest) {
     	String jwt = jwtUtils.parseJwt(request);
 		String userId = userRepository.getUserId(jwt);
@@ -118,23 +120,39 @@ public class FriendController {
 			entry = this.friendRepository.insertFriendEntry(userId, entry);
 		} catch (Exception e) {
 			LOGGER.info("error adding friend for user: {} entry: {}, Error: {}", userId, entry, e);
-			ResponseEntity.badRequest().body(new MessageResponse("Error: some fields are missing and unable to insert data"));
+			return ResponseEntity.badRequest().body(new MessageResponse("Error: some fields are missing and unable to insert data"));
 		}
 		return ResponseEntity.ok(entry);
     }
     
-    @PutMapping("/update")
-    public ResponseEntity<?> updateFriendEntity(HttpServletRequest request, @Valid @RequestBody FriendEntryRequest entRequest) {
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateFriendEntity(HttpServletRequest request, @Valid @RequestBody FriendEntryRequest entRequest,
+    		@PathVariable("id") String id) {
     	String jwt = jwtUtils.parseJwt(request);
 		String userId = userRepository.getUserId(jwt);
 		FriendEntry entry = new FriendEntry(entRequest);
+		entry.setId(id);
 		String timeStamp = null;
 		try {
 			timeStamp = this.friendRepository.updateFriendEntry(userId, entry);
 		} catch (Exception e) {
 			LOGGER.info("error adding friend for user: {} entry: {}, Error: {}", userId, entry, e);
-			ResponseEntity.badRequest().body(new MessageResponse("Error: some fields are missing and unable to update data"));
+			return ResponseEntity.badRequest().body(new MessageResponse("Error: some fields are missing and unable to update data"));
 		}
 		return ResponseEntity.ok(timeStamp);
+    }
+    
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteFriendEntity(HttpServletRequest request, @PathVariable("id") String id) {
+    	String jwt = jwtUtils.parseJwt(request);
+    	String userId = userRepository.getUserId(jwt);
+    	String timeStamp = null;
+    	try {
+    		timeStamp = this.friendRepository.deleteFriendEntry(userId, id);
+    	} catch (Exception e) {
+			LOGGER.info("error deleting friend for user: {} id: {}, Error: {}", userId, id, e);
+			return ResponseEntity.badRequest().body(new MessageResponse("Error: some fields are missing and unable to delete data"));
+    	}
+    	return ResponseEntity.ok(timeStamp);
     }
 }

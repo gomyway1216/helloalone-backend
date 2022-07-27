@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.CollectionReference;
@@ -18,6 +19,8 @@ import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.cloud.FirestoreClient;
 import com.yudaiyaguchi.helloalonebackend.models.CollegeEntry;
 
+
+@Service
 public class CollegeRepository {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(CollegeRepository.class);
@@ -64,6 +67,9 @@ public class CollegeRepository {
 	}
 	
 	public List<CollegeEntry> getCollegeEntries(List<String> collegeIds) throws InterruptedException, ExecutionException {
+		if(collegeIds == null || collegeIds.size() == 0) {
+			return null;
+		}
         List<CollegeEntry> entryList = new ArrayList<>();
         Firestore db = FirestoreClient.getFirestore();
         CollectionReference entries = db.collection("common").document("college").collection("collegeCollection");
@@ -89,7 +95,7 @@ public class CollegeRepository {
         return entryList;
 	}
 	
-    public CollegeEntry addCollegeEntry(CollegeEntry collegeEntry) throws Exception {
+    public CollegeEntry insertCollegeEntry(CollegeEntry collegeEntry) throws Exception {
         Firestore db = FirestoreClient.getFirestore();
         CollectionReference collegeEntries = db.collection("common").document("college").collection("collegeCollection");
         try {

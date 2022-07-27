@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.CollectionReference;
@@ -19,6 +20,7 @@ import com.yudaiyaguchi.helloalonebackend.models.ActivityCategoryEntry;
 import com.yudaiyaguchi.helloalonebackend.models.ActivityEntry;
 import com.yudaiyaguchi.helloalonebackend.models.ActivityTypeEntry;
 
+@Service
 public class ActivityRepository {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActivityRepository.class);
@@ -66,6 +68,10 @@ public class ActivityRepository {
 	
 	public List<ActivityEntry> getActivityEntries(String userId, List<String> activityIds) 
 		throws InterruptedException, ExecutionException {
+		if(activityIds == null || activityIds.size() == 0) {
+			return null;
+		}
+		
         List<ActivityEntry> entryList = new ArrayList<>();
         Firestore db = FirestoreClient.getFirestore();
         CollectionReference entries = db.collection("users").document(userId).collection("activity");
@@ -143,7 +149,7 @@ public class ActivityRepository {
     	}
     }
         
-	public ActivityCategoryEntry getActivityCategoryEntityById(String activityCategoryId)
+	public ActivityCategoryEntry getActivityCategoryEntryById(String activityCategoryId)
 		throws InterruptedException, ExecutionException {
 		Firestore db = FirestoreClient.getFirestore();
 		DocumentReference activityCategoryEntryRef = db.collection("common").document("activityCategory").collection("activityCategoryCollection")
@@ -185,7 +191,11 @@ public class ActivityRepository {
 	}
 	
 	public List<ActivityCategoryEntry> getActivityCategoryEntries(List<String> activityCategoryIds) throws InterruptedException, ExecutionException {
-        List<ActivityCategoryEntry> entryList = new ArrayList<>();
+		if(activityCategoryIds == null || activityCategoryIds.size() == 0) {
+			return null;
+		}
+		
+		List<ActivityCategoryEntry> entryList = new ArrayList<>();
         Firestore db = FirestoreClient.getFirestore();
         CollectionReference entries = db.collection("common").document("activityCategory").collection("activityCategoryCollection");
         // No batch operation for reading multiple documents from the same collection, so the code needs to traverse the list
@@ -196,7 +206,6 @@ public class ActivityRepository {
     		ActivityCategoryEntry activityCategoryEntry = null;
     		try {
     			if (document.exists()) {
-    				LOGGER.info("ActivityCategory entry: {}", document.getData());
     				activityCategoryEntry = document.toObject(ActivityCategoryEntry.class);
     				activityCategoryEntry.setId(document.getId());
     				entryList.add(activityCategoryEntry);
@@ -262,7 +271,7 @@ public class ActivityRepository {
     	}
     }
 
-	public ActivityTypeEntry getActivityTypeEntityById(String activityTypeId)
+	public ActivityTypeEntry getActivityTypeEntryById(String activityTypeId)
 		throws InterruptedException, ExecutionException {
 		Firestore db = FirestoreClient.getFirestore();
 		DocumentReference activityTypeEntryRef = db.collection("common").document("activityType").collection("activityTypeCollection")
@@ -304,7 +313,11 @@ public class ActivityRepository {
 	}
 	
 	public List<ActivityTypeEntry> getActivityTypeEntries(List<String> activityTypeIds) throws InterruptedException, ExecutionException {
-        List<ActivityTypeEntry> entryList = new ArrayList<>();
+		if(activityTypeIds == null || activityTypeIds.size() == 0) {
+			return null;
+		}
+		
+		List<ActivityTypeEntry> entryList = new ArrayList<>();
         Firestore db = FirestoreClient.getFirestore();
         CollectionReference entries = db.collection("common").document("activityType").collection("activityTypeCollection");
         // No batch operation for reading multiple documents from the same collection, so the code needs to traverse the list
@@ -329,7 +342,7 @@ public class ActivityRepository {
         return entryList;
 	}
 	
-    public ActivityTypeEntry insesrtActivityTypeEntry(ActivityTypeEntry activityTypeEntry) throws Exception {
+    public ActivityTypeEntry insertActivityTypeEntry(ActivityTypeEntry activityTypeEntry) throws Exception {
         Firestore db = FirestoreClient.getFirestore();
         CollectionReference activityTypeEntries = db.collection("common").document("activityType").collection("activityTypeCollection");
         try {

@@ -1,9 +1,18 @@
 package com.yudaiyaguchi.helloalonebackend.models;
 
+import com.yudaiyaguchi.helloalonebackend.payload.request.FoodEntryRequest;
+
 public class FoodEntry {
 	
 	private String id;
 	private String name;
+	
+	public FoodEntry() {
+	}
+	
+	public FoodEntry(FoodEntryRequest request) {
+		this.name = request.getName();
+	}
 	
 	public String getId() {
 		return id;

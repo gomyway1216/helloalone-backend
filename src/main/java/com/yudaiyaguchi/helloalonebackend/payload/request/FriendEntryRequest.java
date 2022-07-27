@@ -20,6 +20,7 @@ public class FriendEntryRequest {
 	private String lastNameNative;
 	private String firstNameNativePhonetic;
 	private String lastNameNativePhonetic;
+	private String gender;
 	private Date birthday;
 	private String profileImageLink;
 	private List<String> otherImageLinks;
@@ -31,8 +32,6 @@ public class FriendEntryRequest {
 	private Date created;
 	private Date lastUpdated;
 	private GeoPoint locationMet;
-	// list of activity ids
-	private List<String> activityIds;
 	private String nationalityId;
 	// list of favorite food ids
 	private List<String> favoriteFoodIds;
@@ -98,6 +97,15 @@ public class FriendEntryRequest {
 	public void setLastNameNativePhonetic(String lastNameNativePhonetic) {
 		this.lastNameNativePhonetic = lastNameNativePhonetic;
 	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+	
 	public Date getBirthday() {
 		return birthday;
 	}
@@ -184,14 +192,6 @@ public class FriendEntryRequest {
 	
 	public void setLocationMet(GeoPoint locationMet) {
 		this.locationMet = locationMet;
-	}
-	
-	public List<String> getActivityIds() {
-		return activityIds;
-	}
-	
-	public void setActivityIds(List<String> activityIds) {
-		this.activityIds = activityIds;
 	}
 	
 	public String getNationalityId() {

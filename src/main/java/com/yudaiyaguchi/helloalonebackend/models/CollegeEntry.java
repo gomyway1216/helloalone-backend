@@ -1,9 +1,18 @@
 package com.yudaiyaguchi.helloalonebackend.models;
 
+import com.yudaiyaguchi.helloalonebackend.payload.request.CollegeEntryRequest;
+
 public class CollegeEntry {
 
 	private String id;
 	private String name;
+	
+	public CollegeEntry() {
+	}
+	
+	public CollegeEntry(CollegeEntryRequest request) {
+		this.name = request.getName();
+	}
 	
 	public String getId() {
 		return id;

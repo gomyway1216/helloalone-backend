@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.CollectionReference;
@@ -18,6 +19,8 @@ import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.cloud.FirestoreClient;
 import com.yudaiyaguchi.helloalonebackend.models.FoodEntry;
 
+
+@Service
 public class FoodRepository {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(FoodRepository.class);
@@ -88,7 +91,7 @@ public class FoodRepository {
         return entryList;
 	}
 	
-    public FoodEntry addFoodEntry(FoodEntry foodEntry) throws Exception {
+    public FoodEntry insertFoodEntry(FoodEntry foodEntry) throws Exception {
         Firestore db = FirestoreClient.getFirestore();
         CollectionReference foodEntries = db.collection("common").document("food").collection("foodCollection");
         try {

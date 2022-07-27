@@ -1,9 +1,18 @@
 package com.yudaiyaguchi.helloalonebackend.models;
 
+import com.yudaiyaguchi.helloalonebackend.payload.request.WeatherEntryRequest;
+
 public class WeatherEntry {
 
 	private String id;
 	private String name;
+	
+	public WeatherEntry() {
+	}
+	
+	public WeatherEntry(WeatherEntryRequest request) {
+		this.name = request.getName();
+	}
 	
 	public String getId() {
 		return id;

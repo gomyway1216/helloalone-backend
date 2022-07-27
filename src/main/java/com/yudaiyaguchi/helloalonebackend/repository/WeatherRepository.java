@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.CollectionReference;
@@ -18,6 +19,7 @@ import com.google.firebase.cloud.FirestoreClient;
 import com.yudaiyaguchi.helloalonebackend.models.WeatherEntry;
 
 
+@Service
 public class WeatherRepository {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(WeatherRepository.class);
@@ -25,6 +27,7 @@ public class WeatherRepository {
 	public WeatherEntry getWeatherEntryById(String weatherId)
 		throws InterruptedException, ExecutionException {
 		Firestore db = FirestoreClient.getFirestore();
+		LOGGER.info("weatherId: {}", weatherId);
 		DocumentReference weatherEntryRef = db.collection("common").document("weather").collection("weatherCollection")
 				.document(weatherId);
 		ApiFuture<DocumentSnapshot> future = weatherEntryRef.get();
@@ -63,7 +66,7 @@ public class WeatherRepository {
         return entryList;
 	}
 	
-    public WeatherEntry addWeatherEntry(WeatherEntry weatherEntry) throws Exception {
+    public WeatherEntry insertWeatherEntry(WeatherEntry weatherEntry) throws Exception {
         Firestore db = FirestoreClient.getFirestore();
         CollectionReference weatherEntries = db.collection("common").document("weather").collection("weatherCollection");
         try {

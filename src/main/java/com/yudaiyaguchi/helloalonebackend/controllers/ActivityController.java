@@ -10,7 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +27,7 @@ import com.yudaiyaguchi.helloalonebackend.repository.FriendRepository;
 import com.yudaiyaguchi.helloalonebackend.repository.UserRepository;
 import com.yudaiyaguchi.helloalonebackend.repository.WeatherRepository;
 import com.yudaiyaguchi.helloalonebackend.security.jwt.JwtUtils;
+
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -68,30 +71,30 @@ public class ActivityController {
         	});
         } catch (Exception e) {
             LOGGER.warn("error finding record for user: {} Error: {}", userId, e);
-            ResponseEntity.badRequest().body(new MessageResponse("Error: Unable to get FriendEntries"));
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Unable to get ActivityEntries"));
         }
         return ResponseEntity.ok(activityResponseList);
     }
     
-    @GetMapping("/{responseEntryId}")
-    public ResponseEntity<?> getActivityEntity(HttpServletRequest request, @Valid String responseEntryId) {
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getActivityEntity(HttpServletRequest request, @PathVariable("id") String id) {
     	String jwt = jwtUtils.parseJwt(request);
         String userId = userRepository.getUserId(jwt);
         ActivityResponse response = null;
         try {
-        	ActivityEntry entry = this.activityRepository.getActivityEntryById(userId, responseEntryId);
+        	ActivityEntry entry = this.activityRepository.getActivityEntryById(userId, id);
         	response = new ActivityResponse(entry,
 					this.weatherRepository.getWeatherEntryById(entry.getWeatherId()),
 					this.friendRepository.getFriendEntries(entry.getUserId(), entry.getFriendIds()),
 					this.activityRepository.getActivityTypeEntries(entry.getActivityTypeIds()));
         } catch (Exception e) {
         	LOGGER.warn("error finding friend entry for user: {} Error: {}", userId, e);
-        	ResponseEntity.badRequest().body(new MessageResponse("Error: Unable to get FriendEntry"));
+        	return ResponseEntity.badRequest().body(new MessageResponse("Error: Unable to get ActivityEntry"));
         }
         return ResponseEntity.ok(response);
     }
     
-    @PostMapping("/insert")
+    @PostMapping("/")
     public ResponseEntity<?> insertActivityEntity(HttpServletRequest request, @Valid @RequestBody ActivityEntryRequest entRequest) {
     	String jwt = jwtUtils.parseJwt(request);
 		String userId = userRepository.getUserId(jwt);
@@ -100,23 +103,40 @@ public class ActivityController {
 			entry = this.activityRepository.insertActivityEntry(userId, entry);
 		} catch (Exception e) {
 			LOGGER.info("error adding activity for user: {} entry: {}, Error: {}", userId, entry, e);
-			ResponseEntity.badRequest().body(new MessageResponse("Error: some fields are missing and unable to insert data"));
+			return ResponseEntity.badRequest().body(new MessageResponse("Error: some fields are missing and unable to insert data"));
 		}
 		return ResponseEntity.ok(entry);
     }
     
-    @PutMapping("/update")
-    public ResponseEntity<?> updateFriendEntity(HttpServletRequest request, @Valid @RequestBody ActivityEntryRequest entRequest) {
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateActivityEntity(HttpServletRequest request, @Valid @RequestBody ActivityEntryRequest entRequest,
+    		@PathVariable("id") String id) {
     	String jwt = jwtUtils.parseJwt(request);
 		String userId = userRepository.getUserId(jwt);
 		ActivityEntry entry = new ActivityEntry(entRequest);
+		entry.setId(id);
 		String timeStamp = null;
 		try {
 			timeStamp = this.activityRepository.updateActivityEntry(userId, entry);
 		} catch (Exception e) {
-			LOGGER.info("error adding activity for user: {} entry: {}, Error: {}", userId, entry, e);
-			ResponseEntity.badRequest().body(new MessageResponse("Error: some fields are missing and unable to update data"));
+			LOGGER.info("error updating activity for user: {} entry: {}, Error: {}", userId, entry, e);
+			return ResponseEntity.badRequest().body(new MessageResponse("Error: some fields are missing and unable to update data"));
 		}
 		return ResponseEntity.ok(timeStamp);
     }
+    
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteActivityEntity(HttpServletRequest request, @PathVariable("id") String id) {
+    	String jwt = jwtUtils.parseJwt(request);
+    	String userId = userRepository.getUserId(jwt);
+    	String timeStamp = null;
+    	try {
+    		timeStamp = this.activityRepository.deleteActivityEntry(userId, id);
+    	} catch (Exception e) {
+			LOGGER.info("error deleting activity for user: {} id: {}, Error: {}", userId, id, e);
+			return ResponseEntity.badRequest().body(new MessageResponse("Error: some fields are missing and unable to delete data"));
+    	}
+    	return ResponseEntity.ok(timeStamp);
+    }
 }
+

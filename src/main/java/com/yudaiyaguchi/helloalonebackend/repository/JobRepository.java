@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.CollectionReference;
@@ -18,6 +19,8 @@ import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.cloud.FirestoreClient;
 import com.yudaiyaguchi.helloalonebackend.models.JobEntry;
 
+
+@Service
 public class JobRepository {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(JobRepository.class);
@@ -64,7 +67,11 @@ public class JobRepository {
 	}
 	
 	public List<JobEntry> getJobEntries(List<String> jobIds) throws InterruptedException, ExecutionException {
-        List<JobEntry> entryList = new ArrayList<>();
+		if(jobIds == null || jobIds.size() == 0) {
+			return null;
+		}
+		
+		List<JobEntry> entryList = new ArrayList<>();
         Firestore db = FirestoreClient.getFirestore();
         CollectionReference entries = db.collection("common").document("job").collection("jobCollection");
         // No batch operation for reading multiple documents from the same collection, so the code needs to traverse the list
@@ -89,7 +96,7 @@ public class JobRepository {
         return entryList;
 	}
 	
-    public JobEntry addJobEntry(JobEntry jobEntry) throws Exception {
+    public JobEntry insertJobEntry(JobEntry jobEntry) throws Exception {
         Firestore db = FirestoreClient.getFirestore();
         CollectionReference jobEntries = db.collection("common").document("job").collection("jobCollection");
         try {

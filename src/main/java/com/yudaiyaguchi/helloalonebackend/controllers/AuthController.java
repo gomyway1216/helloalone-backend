@@ -81,7 +81,7 @@ public class AuthController {
         try {
             authentication = authenticationManager.authenticate(authenticationToken);
         } catch (Exception e) {
-            LOGGER.info("authentication exception: {}", e);
+            LOGGER.error("authentication exception", e);
         }
 
         LOGGER.info("the authentication was fine.");

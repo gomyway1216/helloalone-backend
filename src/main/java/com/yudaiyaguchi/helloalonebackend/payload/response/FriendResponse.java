@@ -23,6 +23,7 @@ public class FriendResponse {
 	private String lastNameNative;
 	private String firstNameNativePhonetic;
 	private String lastNameNativePhonetic;
+	private String gender;
 	private Date birthday;
 	private String profileImageLink;
 	private List<String> otherImageLinks;
@@ -59,6 +60,7 @@ public class FriendResponse {
 		this.lastNameNative = friendEntry.getLastNameNative();
 		this.firstNameNativePhonetic = friendEntry.getFirstNameNativePhonetic();
 		this.lastNameNativePhonetic = friendEntry.getLastNameNativePhonetic();
+		this.gender = friendEntry.getGender();
 		this.birthday = friendEntry.getBirthday();
 		this.profileImageLink = friendEntry.getProfileImageLink();
 		this.otherImageLinks = friendEntry.getOtherImageLinks();
@@ -128,9 +130,9 @@ public class FriendResponse {
 	
 	public String getFirstNameNativePhonetic() {
 		return firstNameNativePhonetic;
-	}
+	}	
 	
-	public void setFirstNamePhonetic(String firstNameNativePhonetic) {
+	public void setFirstNameNativePhonetic(String firstNameNativePhonetic) {
 		this.firstNameNativePhonetic = firstNameNativePhonetic;
 	}
 	
@@ -141,6 +143,15 @@ public class FriendResponse {
 	public void setLastNameNativePhonetic(String lastNameNativePhonetic) {
 		this.lastNameNativePhonetic = lastNameNativePhonetic;
 	}
+	
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+	
 	public Date getBirthday() {
 		return birthday;
 	}

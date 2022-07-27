@@ -1,9 +1,18 @@
 package com.yudaiyaguchi.helloalonebackend.models;
 
+import com.yudaiyaguchi.helloalonebackend.payload.request.NationalityEntryRequest;
+
 public class NationalityEntry {
 	
 	private String id;
 	private String name;
+	
+	public NationalityEntry() {	
+	}
+	
+	public NationalityEntry(NationalityEntryRequest request) {
+		this.name = request.getName();
+	}
 	
 	public String getId() {
 		return id;
