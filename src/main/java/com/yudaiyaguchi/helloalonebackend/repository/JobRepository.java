@@ -25,10 +25,10 @@ public class JobRepository {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(JobRepository.class);
 	
-	public JobEntry getJobEntryById(String jobId)
+	public JobEntry getJobEntryById(String userId, String jobId)
 		throws InterruptedException, ExecutionException {
 		Firestore db = FirestoreClient.getFirestore();
-		DocumentReference jobEntryRef = db.collection("common").document("job").collection("jobCollection")
+		DocumentReference jobEntryRef = db.collection("users").document(userId).collection("job")
 				.document(jobId);
 		ApiFuture<DocumentSnapshot> future = jobEntryRef.get();
 		DocumentSnapshot document = future.get();
@@ -45,10 +45,10 @@ public class JobRepository {
 		return jobEntry;
 	}
 	
-	public List<JobEntry> getJobEntries() {
+	public List<JobEntry> getJobEntries(String userId) {
         List<JobEntry> entryList = new ArrayList<>();
         Firestore db = FirestoreClient.getFirestore();
-        CollectionReference entries = db.collection("common").document("job").collection("jobCollection");
+        CollectionReference entries = db.collection("users").document(userId).collection("job");
         ApiFuture<QuerySnapshot> future = entries.get();
         try {
             QuerySnapshot val = future.get();
@@ -66,14 +66,14 @@ public class JobRepository {
         return entryList;
 	}
 	
-	public List<JobEntry> getJobEntries(List<String> jobIds) throws InterruptedException, ExecutionException {
+	public List<JobEntry> getJobEntries(String userId, List<String> jobIds) throws InterruptedException, ExecutionException {
 		if(jobIds == null || jobIds.size() == 0) {
 			return null;
 		}
 		
 		List<JobEntry> entryList = new ArrayList<>();
         Firestore db = FirestoreClient.getFirestore();
-        CollectionReference entries = db.collection("common").document("job").collection("jobCollection");
+        CollectionReference entries = db.collection("users").document(userId).collection("job");
         // No batch operation for reading multiple documents from the same collection, so the code needs to traverse the list
         for(int i = 0; i < jobIds.size(); i++) {
         	DocumentReference collegeEntryRef = entries.document(jobIds.get(i));
@@ -96,9 +96,9 @@ public class JobRepository {
         return entryList;
 	}
 	
-    public JobEntry insertJobEntry(JobEntry jobEntry) throws Exception {
+    public JobEntry insertJobEntry(String userId, JobEntry jobEntry) throws Exception {
         Firestore db = FirestoreClient.getFirestore();
-        CollectionReference jobEntries = db.collection("common").document("job").collection("jobCollection");
+        CollectionReference jobEntries = db.collection("users").document(userId).collection("job");
         try {
             ApiFuture<DocumentReference> res = jobEntries.add(jobEntry);
             DocumentReference val = res.get();
@@ -114,13 +114,13 @@ public class JobRepository {
         }
     }
     
-    public String updateJobEntry(JobEntry jobEntry) throws Exception {
+    public String updateJobEntry(String userId, JobEntry jobEntry) throws Exception {
     	if(!StringUtils.hasLength(jobEntry.getId())) {
     		throw new Exception("Entry Id cannot be null for update operation!");
     	}
     	
         Firestore db = FirestoreClient.getFirestore();
-        CollectionReference jobEntries = db.collection("common").document("job").collection("jobCollection");
+        CollectionReference jobEntries = db.collection("users").document(userId).collection("job");
         try {
             ApiFuture<WriteResult> res = jobEntries.document(jobEntry.getId()).set(jobEntry);
             return res.get().getUpdateTime().toString();
@@ -131,13 +131,13 @@ public class JobRepository {
         }
     }
     
-    public String deleteJobEntry(String id) throws Exception {
+    public String deleteJobEntry(String userId, String id) throws Exception {
     	if(!StringUtils.hasLength(id)) {
     		throw new Exception("Entry Id cannot be null or empty for delete operation!");
     	}
     	
     	Firestore db = FirestoreClient.getFirestore();
-    	CollectionReference jobEntries = db.collection("common").document("job").collection("jobCollection");
+    	CollectionReference jobEntries = db.collection("users").document(userId).collection("job");
     	try {
     		ApiFuture<WriteResult> res = jobEntries.document(id).delete();
     		return res.get().getUpdateTime().toString();

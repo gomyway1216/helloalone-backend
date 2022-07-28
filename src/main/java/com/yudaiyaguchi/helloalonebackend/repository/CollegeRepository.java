@@ -25,10 +25,10 @@ public class CollegeRepository {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(CollegeRepository.class);
 	
-	public CollegeEntry getCollegeEntryById(String collegeId)
+	public CollegeEntry getCollegeEntryById(String userId, String collegeId)
 		throws InterruptedException, ExecutionException {
 		Firestore db = FirestoreClient.getFirestore();
-		DocumentReference collegeEntryRef = db.collection("common").document("college").collection("collegeCollection")
+		DocumentReference collegeEntryRef = db.collection("users").document(userId).collection("college")
 				.document(collegeId);
 		ApiFuture<DocumentSnapshot> future = collegeEntryRef.get();
 		DocumentSnapshot document = future.get();
@@ -45,10 +45,10 @@ public class CollegeRepository {
 		return collegeEntry;
 	}
 	
-	public List<CollegeEntry> getCollegeEntries() {
+	public List<CollegeEntry> getCollegeEntries(String userId) {
         List<CollegeEntry> entryList = new ArrayList<>();
         Firestore db = FirestoreClient.getFirestore();
-        CollectionReference entries = db.collection("common").document("college").collection("collegeCollection");
+        CollectionReference entries = db.collection("users").document(userId).collection("college");
         ApiFuture<QuerySnapshot> future = entries.get();
         try {
             QuerySnapshot val = future.get();
@@ -66,13 +66,13 @@ public class CollegeRepository {
         return entryList;
 	}
 	
-	public List<CollegeEntry> getCollegeEntries(List<String> collegeIds) throws InterruptedException, ExecutionException {
+	public List<CollegeEntry> getCollegeEntries(String userId, List<String> collegeIds) throws InterruptedException, ExecutionException {
 		if(collegeIds == null || collegeIds.size() == 0) {
 			return null;
 		}
         List<CollegeEntry> entryList = new ArrayList<>();
         Firestore db = FirestoreClient.getFirestore();
-        CollectionReference entries = db.collection("common").document("college").collection("collegeCollection");
+        CollectionReference entries = db.collection("users").document(userId).collection("college");
         // No batch operation for reading multiple documents from the same collection, so the code needs to traverse the list
         for(int i = 0; i < collegeIds.size(); i++) {
         	DocumentReference collegeEntryRef = entries.document(collegeIds.get(i));
@@ -95,9 +95,9 @@ public class CollegeRepository {
         return entryList;
 	}
 	
-    public CollegeEntry insertCollegeEntry(CollegeEntry collegeEntry) throws Exception {
+    public CollegeEntry insertCollegeEntry(String userId, CollegeEntry collegeEntry) throws Exception {
         Firestore db = FirestoreClient.getFirestore();
-        CollectionReference collegeEntries = db.collection("common").document("college").collection("collegeCollection");
+        CollectionReference collegeEntries = db.collection("users").document(userId).collection("college");
         try {
             ApiFuture<DocumentReference> res = collegeEntries.add(collegeEntry);
             DocumentReference val = res.get();
@@ -113,13 +113,13 @@ public class CollegeRepository {
         }
     }
     
-    public String updateCollegeEntry(CollegeEntry collegeEntry) throws Exception {
+    public String updateCollegeEntry(String userId, CollegeEntry collegeEntry) throws Exception {
     	if(!StringUtils.hasLength(collegeEntry.getId())) {
     		throw new Exception("Entry Id cannot be null for update operation!");
     	}
     	
         Firestore db = FirestoreClient.getFirestore();
-        CollectionReference collegeEntries = db.collection("common").document("college").collection("collegeCollection");
+        CollectionReference collegeEntries = db.collection("users").document(userId).collection("college");
         try {
             ApiFuture<WriteResult> res = collegeEntries.document(collegeEntry.getId()).set(collegeEntry);
             return res.get().getUpdateTime().toString();
@@ -130,13 +130,13 @@ public class CollegeRepository {
         }
     }
     
-    public String deleteCollegeEntry(String id) throws Exception {
+    public String deleteCollegeEntry(String userId, String id) throws Exception {
     	if(!StringUtils.hasLength(id)) {
     		throw new Exception("Entry Id cannot be null or empty for delete operation!");
     	}
     	
     	Firestore db = FirestoreClient.getFirestore();
-    	CollectionReference collegeEntries = db.collection("common").document("college").collection("collegeCollection");
+    	CollectionReference collegeEntries = db.collection("users").document(userId).collection("college");
     	try {
     		ApiFuture<WriteResult> res = collegeEntries.document(id).delete();
     		return res.get().getUpdateTime().toString();

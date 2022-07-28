@@ -1,14 +1,7 @@
 package com.yudaiyaguchi.helloalonebackend.controllers;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
-
 import javax.validation.Valid;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.yudaiyaguchi.helloalonebackend.exception.TokenRefreshException;
 //import com.yudaiyaguchi.helloalonebackend.models.ERole;
 import com.yudaiyaguchi.helloalonebackend.models.RefreshToken;
@@ -94,7 +86,7 @@ public class AuthController {
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 
         return ResponseEntity.ok(new JwtResponse(jwt, refreshToken.getToken(), userDetails.getId(),
-                userDetails.getUsername(), userDetails.getEmail()));
+                userDetails.getUsername(), userDetails.getEmail(), userDetails.isAdmin()));
     }
 
     @PostMapping("/signup")

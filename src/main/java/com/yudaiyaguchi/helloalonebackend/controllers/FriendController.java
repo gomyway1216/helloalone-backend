@@ -76,8 +76,8 @@ public class FriendController {
         				this.nationalityRepository.getNationalityEntryById(entry.getNationalityId()),
         				this.foodRepository.getFoodEntries(),
         				this.activityRepository.getActivityTypeEntries(entry.getHobbyIds()),
-        				this.collegeRepository.getCollegeEntries(entry.getCollegeIds()),
-        				this.jobRepository.getJobEntries(entry.getJobIds()));
+        				this.collegeRepository.getCollegeEntries(userId, entry.getCollegeIds()),
+        				this.jobRepository.getJobEntries(userId, entry.getJobIds()));
 					friendResponseList.add(response);
 				} catch (InterruptedException | ExecutionException e) {
 					LOGGER.warn("error finding child record for user: {} Error: {}", userId, e);
@@ -102,8 +102,8 @@ public class FriendController {
     				this.nationalityRepository.getNationalityEntryById(entry.getNationalityId()),
     				this.foodRepository.getFoodEntries(),
     				this.activityRepository.getActivityTypeEntries(entry.getHobbyIds()),
-    				this.collegeRepository.getCollegeEntries(entry.getCollegeIds()),
-    				this.jobRepository.getJobEntries(entry.getJobIds()));
+    				this.collegeRepository.getCollegeEntries(userId, entry.getCollegeIds()),
+    				this.jobRepository.getJobEntries(userId, entry.getJobIds()));
         } catch (Exception e) {
         	LOGGER.warn("error finding friend entry for user: {} Error: {}", userId, e);
         	return ResponseEntity.badRequest().body(new MessageResponse("Error: Unable to get FriendEntry"));

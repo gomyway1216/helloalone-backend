@@ -47,7 +47,7 @@ public class CollegeController {
         String userId = userRepository.getUserId(jwt);
         List<CollegeResponse> collegeResponseList = new ArrayList<>();
         try {
-        	List<CollegeEntry> collegeEntryList = this.collegeRepository.getCollegeEntries();
+        	List<CollegeEntry> collegeEntryList = this.collegeRepository.getCollegeEntries(userId);
         	collegeEntryList.forEach(entry -> {
         		CollegeResponse response = new CollegeResponse(entry);
         		collegeResponseList.add(response);
@@ -65,7 +65,7 @@ public class CollegeController {
         String userId = userRepository.getUserId(jwt);
         CollegeResponse response = null;
         try {
-        	CollegeEntry entry = this.collegeRepository.getCollegeEntryById(id);
+        	CollegeEntry entry = this.collegeRepository.getCollegeEntryById(userId, id);
         	response = new CollegeResponse(entry);
         } catch (Exception e) {
         	LOGGER.warn("error finding college entry for user: {} Error: {}", userId, e);
@@ -77,14 +77,10 @@ public class CollegeController {
     @PostMapping("/")
     public ResponseEntity<?> insertCollegeEntity(HttpServletRequest request, @Valid @RequestBody CollegeEntryRequest entRequest) {
     	String jwt = jwtUtils.parseJwt(request);
+    	String userId = userRepository.getUserId(jwt);
     	CollegeEntry entry = new CollegeEntry(entRequest);
 		try {
-	        // admin user can only modify the global values.
-			if(!userRepository.isUserIdAdminByToken(jwt)) {
-				LOGGER.warn("user is not admin and this college insertion is prohibited");
-				return ResponseEntity.badRequest().body(new MessageResponse("Error: User is not admin and this college insertion is prohibited"));
-			}
-			entry = this.collegeRepository.insertCollegeEntry(entry);
+			entry = this.collegeRepository.insertCollegeEntry(userId, entry);
 		} catch (Exception e) {
 			LOGGER.warn("error adding college for entry: {}, Error: {}", entry, e);
 			return ResponseEntity.badRequest().body(new MessageResponse("Error: some fields are missing and unable to insert data"));
@@ -96,16 +92,12 @@ public class CollegeController {
     public ResponseEntity<?> updateCollegeEntity(HttpServletRequest request, @Valid @RequestBody CollegeEntryRequest entRequest,
     		@PathVariable("id") String id) {
     	String jwt = jwtUtils.parseJwt(request);
+    	String userId = userRepository.getUserId(jwt);
 		CollegeEntry entry = new CollegeEntry(entRequest);
 		entry.setId(id);
 		String timeStamp = null;
 		try {
-	        // admin user can only modify the global values.
-			if(!userRepository.isUserIdAdminByToken(jwt)) {
-				LOGGER.warn("user is not admin and this college update is prohibited");
-				return ResponseEntity.badRequest().body(new MessageResponse("Error: User is not admin and this college update is prohibited"));
-			}
-			timeStamp = this.collegeRepository.updateCollegeEntry(entry);
+			timeStamp = this.collegeRepository.updateCollegeEntry(userId, entry);
 		} catch (Exception e) {
 			LOGGER.info("error adding college for entry: {}, Error: {}", entry, e);
 			return ResponseEntity.badRequest().body(new MessageResponse("Error: some fields are missing and unable to update data"));
@@ -119,12 +111,7 @@ public class CollegeController {
     	String userId = userRepository.getUserId(jwt);
     	String timeStamp = null;
     	try {
-            // admin user can only modify the global values.
-			if(!userRepository.isUserIdAdminByToken(jwt)) {
-				LOGGER.warn("user is not admin and this college deletion is prohibited");
-				return ResponseEntity.badRequest().body(new MessageResponse("Error: User is not admin and this college deletion is prohibited"));
-			}
-    		timeStamp = this.collegeRepository.deleteCollegeEntry(id);
+    		timeStamp = this.collegeRepository.deleteCollegeEntry(userId, id);
     	} catch (Exception e) {
 			LOGGER.info("error deleting college for user: {} id: {}, Error: {}", userId, id, e);
 			return ResponseEntity.badRequest().body(new MessageResponse("Error: some fields are missing and unable to delete data"));

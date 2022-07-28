@@ -1,16 +1,13 @@
 package com.yudaiyaguchi.helloalonebackend.security.services;
 
+
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import com.yudaiyaguchi.helloalonebackend.models.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 public class UserDetailsImpl implements UserDetails {
     private static final long serialVersionUID = 1L;
@@ -23,6 +20,8 @@ public class UserDetailsImpl implements UserDetails {
 
     @JsonIgnore
     private String password;
+    
+    private boolean admin;
 
     private Collection<? extends GrantedAuthority> authorities;
 
@@ -35,11 +34,12 @@ public class UserDetailsImpl implements UserDetails {
     // this.authorities = authorities;
     // }
 
-    public UserDetailsImpl(String id, String username, String email, String password) {
+    public UserDetailsImpl(String id, String username, String email, String password, boolean admin) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
+        this.admin = admin;
     }
 
     public static UserDetailsImpl build(User user) {
@@ -54,7 +54,7 @@ public class UserDetailsImpl implements UserDetails {
         // user.getPassword(),
         // authorities);
 
-        return new UserDetailsImpl(user.getId(), user.getUsername(), user.getEmail(), user.getPassword());
+        return new UserDetailsImpl(user.getId(), user.getUsername(), user.getEmail(), user.getPassword(), user.isAdmin());
     }
 
     @Override
@@ -79,6 +79,14 @@ public class UserDetailsImpl implements UserDetails {
     public String getUsername() {
         return username;
     }
+    
+	public boolean isAdmin() {
+		return admin;
+	}
+
+	public void setAdmin(boolean admin) {
+		this.admin = admin;
+	}
 
     @Override
     public boolean isAccountNonExpired() {

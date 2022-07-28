@@ -47,7 +47,7 @@ public class JobController {
         String userId = userRepository.getUserId(jwt);
         List<JobResponse> jobResponseList = new ArrayList<>();
         try {
-        	List<JobEntry> jobEntryList = this.jobRepository.getJobEntries();
+        	List<JobEntry> jobEntryList = this.jobRepository.getJobEntries(userId);
         	jobEntryList.forEach(entry -> {
         		JobResponse response = new JobResponse(entry);
         		jobResponseList.add(response);
@@ -65,7 +65,7 @@ public class JobController {
         String userId = userRepository.getUserId(jwt);
         JobResponse response = null;
         try {
-        	JobEntry entry = this.jobRepository.getJobEntryById(id);
+        	JobEntry entry = this.jobRepository.getJobEntryById(userId, id);
         	response = new JobResponse(entry);
         } catch (Exception e) {
         	LOGGER.warn("error finding job entry for user: {} Error: {}", userId, e);
@@ -77,14 +77,10 @@ public class JobController {
     @PostMapping("/")
     public ResponseEntity<?> insertJobEntity(HttpServletRequest request, @Valid @RequestBody JobEntryRequest entRequest) {
     	String jwt = jwtUtils.parseJwt(request);
+    	String userId = userRepository.getUserId(jwt);
     	JobEntry entry = new JobEntry(entRequest);
 		try {
-	        // admin user can only modify the global values.
-			if(!userRepository.isUserIdAdminByToken(jwt)) {
-				LOGGER.warn("user is not admin and this job insertion is prohibited");
-				return ResponseEntity.badRequest().body(new MessageResponse("Error: User is not admin and this job insertion is prohibited"));
-			}
-			entry = this.jobRepository.insertJobEntry(entry);
+			entry = this.jobRepository.insertJobEntry(userId, entry);
 		} catch (Exception e) {
 			LOGGER.warn("error adding job for entry: {}, Error: {}", entry, e);
 			return ResponseEntity.badRequest().body(new MessageResponse("Error: some fields are missing and unable to insert data"));
@@ -96,16 +92,12 @@ public class JobController {
     public ResponseEntity<?> updateJobEntity(HttpServletRequest request, @Valid @RequestBody JobEntryRequest entRequest,
     		@PathVariable("id") String id) {
     	String jwt = jwtUtils.parseJwt(request);
+    	String userId = userRepository.getUserId(jwt);
 		JobEntry entry = new JobEntry(entRequest);
 		entry.setId(id);
 		String timeStamp = null;
 		try {
-	        // admin user can only modify the global values.
-			if(!userRepository.isUserIdAdminByToken(jwt)) {
-				LOGGER.warn("user is not admin and this job update is prohibited");
-				return ResponseEntity.badRequest().body(new MessageResponse("Error: User is not admin and this job update is prohibited"));
-			}
-			timeStamp = this.jobRepository.updateJobEntry(entry);
+			timeStamp = this.jobRepository.updateJobEntry(userId, entry);
 		} catch (Exception e) {
 			LOGGER.info("error adding job for entry: {}, Error: {}", entry, e);
 			return ResponseEntity.badRequest().body(new MessageResponse("Error: some fields are missing and unable to update data"));
@@ -119,12 +111,7 @@ public class JobController {
     	String userId = userRepository.getUserId(jwt);
     	String timeStamp = null;
     	try {
-            // admin user can only modify the global values.
-			if(!userRepository.isUserIdAdminByToken(jwt)) {
-				LOGGER.warn("user is not admin and this job deletion is prohibited");
-				return ResponseEntity.badRequest().body(new MessageResponse("Error: User is not admin and this job deletion is prohibited"));
-			}
-    		timeStamp = this.jobRepository.deleteJobEntry(id);
+    		timeStamp = this.jobRepository.deleteJobEntry(userId, id);
     	} catch (Exception e) {
 			LOGGER.info("error deleting job for user: {} id: {}, Error: {}", userId, id, e);
 			return ResponseEntity.badRequest().body(new MessageResponse("Error: some fields are missing and unable to delete data"));
