@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -20,6 +21,7 @@ import com.google.cloud.firestore.QuerySnapshot;
 import com.google.firebase.cloud.FirestoreClient;
 import com.yudaiyaguchi.helloalonebackend.controllers.AuthController;
 import com.yudaiyaguchi.helloalonebackend.models.User;
+import com.yudaiyaguchi.helloalonebackend.security.jwt.JwtUtils;
 
 @Service
 public class UserRepository {
@@ -36,12 +38,16 @@ public class UserRepository {
     // Firestore db = FirestoreClient.getFirestore();
     // CollectionReference user
     // }
+    
+    @Autowired
+    JwtUtils jwtUtils;
 
     public User findById(String id) throws InterruptedException, ExecutionException {
         Firestore db = FirestoreClient.getFirestore();
         DocumentReference userRef = db.collection("users").document(id);
         ApiFuture<DocumentSnapshot> future = userRef.get();
         DocumentSnapshot document = future.get();
+        
         if (document.exists()) {
             User user = document.toObject(User.class);
             user.setId(id);
@@ -68,7 +74,7 @@ public class UserRepository {
                     user.getPassword());
             return user;
         } catch (Exception e) {
-            LOGGER.info("error message: {}", e.getClass());
+            LOGGER.error("error message:", e);
         }
         return null;
     }
@@ -119,5 +125,45 @@ public class UserRepository {
         //
         // ApiFuture<WriteResult> result = docRef.set(data);
         // System.out.println("Update time : " + result.get().getUpdateTime());
+    }
+    
+    public String getUserId(String jwt) {
+        LOGGER.info("jwt token for getting user Info: :{}", jwt);
+        String username = jwtUtils.getUserNameFromJwtToken(jwt);
+        User user = null;
+        try {
+            user = this.findByUsername(username);
+        } catch (Exception e) {
+            LOGGER.error("error getting user: {}", e);
+        }
+        String userId = user.getId();
+        LOGGER.info("userId retrieved by jwt token : {}", userId);
+        return userId;
+    }
+    
+    public boolean isUserIdAdminByToken(String jwt) throws InterruptedException, ExecutionException {
+        LOGGER.info("jwt token for getting user Info: :{}", jwt);
+        String username = jwtUtils.getUserNameFromJwtToken(jwt);
+        User user = null;
+        try {
+            user = this.findByUsername(username);
+        } catch (Exception e) {
+            LOGGER.error("error getting user: {}", e);
+        }
+        return user.isAdmin();
+    }
+    
+    public boolean isUserIdAdmin(String userId) throws InterruptedException, ExecutionException {
+    	Firestore db = FirestoreClient.getFirestore();
+    	DocumentReference userRef = db.collection("users").document(userId);
+        ApiFuture<DocumentSnapshot> future = userRef.get();
+        DocumentSnapshot document = future.get();
+        if (document.exists()) {
+            User user = document.toObject(User.class);
+            return user.isAdmin();
+        } else {
+        	LOGGER.error("error getting user: " + userId);
+            return false;
+        }
     }
 }

@@ -1,9 +1,7 @@
 package com.yudaiyaguchi.helloalonebackend.repository;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +13,6 @@ import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
-import com.google.cloud.firestore.SetOptions;
-import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.cloud.FirestoreClient;
 import com.yudaiyaguchi.helloalonebackend.models.DictionaryEntry;
 //import com.google.cloud.Timestamp;
@@ -41,7 +37,7 @@ public class DictionaryRepository {
                 dicEntry.setId(document.getId());
             }
         } catch (Exception e) {
-            LOGGER.error("error getting friend by id", e);
+            LOGGER.error("error getting dictionary entry by id", e);
         }
         return dicEntry;
     }
@@ -53,9 +49,9 @@ public class DictionaryRepository {
         ApiFuture<QuerySnapshot> future = entries.get();
         try {
             QuerySnapshot val = future.get();
-            List<QueryDocumentSnapshot> v1 = val.getDocuments();
-            for (int i = 0; i < v1.size(); i++) {
-                QueryDocumentSnapshot document = v1.get(i);
+            List<QueryDocumentSnapshot> docSnaps = val.getDocuments();
+            for (int i = 0; i < docSnaps.size(); i++) {
+                QueryDocumentSnapshot document = docSnaps.get(i);
                 DictionaryEntry entry = document.toObject(DictionaryEntry.class);
                 entry.setId(document.getId());
                 LOGGER.info("friend values after: {}", entry.toString());
@@ -63,7 +59,7 @@ public class DictionaryRepository {
             }
         } catch (Exception e) {
             // TODO Handle different type of exceptions
-            LOGGER.error("Exception getting friends", e);
+            LOGGER.error("Exception getting dictionary entries", e);
         }
         return entryList;
     }
@@ -81,7 +77,7 @@ public class DictionaryRepository {
             return dictionaryEntry;
         } catch (Exception e) {
         	// TODO Handle different type of exceptions
-            LOGGER.error("insertion is failing", e);
+            LOGGER.error("Dictionary entry insertion is failing", e);
             throw e;
         }
     }
@@ -121,7 +117,7 @@ public class DictionaryRepository {
     		return tagEntry;
     	} catch (Exception e) {
         	// TODO Handle different type of exceptions
-            LOGGER.error("inserting tag is failing", e);
+            LOGGER.error("tag entrty insertion is failing", e);
             throw e;
     	}
     }

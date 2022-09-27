@@ -7,6 +7,7 @@ public class JwtResponse {
     private String id;
     private String username;
     private String email;
+    private boolean admin;
     // private List<String> roles;
 
     // public JwtResponse(String accessToken, String id, String username, String email, List<String> roles) {
@@ -17,12 +18,13 @@ public class JwtResponse {
     // this.roles = roles;
     // }
 
-    public JwtResponse(String accessToken, String refreshToken, String id, String username, String email) {
+    public JwtResponse(String accessToken, String refreshToken, String id, String username, String email, boolean admin) {
         this.token = accessToken;
         this.refreshToken = refreshToken;
         this.id = id;
         this.username = username;
         this.email = email;
+        this.admin = admin;
     }
 
     public String getAccessToken() {
@@ -64,6 +66,14 @@ public class JwtResponse {
     public void setUsername(String username) {
         this.username = username;
     }
+    
+	public boolean isAdmin() {
+		return admin;
+	}
+
+	public void setAdmin(boolean admin) {
+		this.admin = admin;
+	}  
 
     // public List<String> getRoles() {
     // return roles;

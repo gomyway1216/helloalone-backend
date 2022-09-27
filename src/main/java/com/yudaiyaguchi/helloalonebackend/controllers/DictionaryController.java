@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yudaiyaguchi.helloalonebackend.models.DictionaryEntry;
 import com.yudaiyaguchi.helloalonebackend.models.TagEntry;
-import com.yudaiyaguchi.helloalonebackend.models.User;
 import com.yudaiyaguchi.helloalonebackend.payload.request.AddDictionaryEntryRequest;
 import com.yudaiyaguchi.helloalonebackend.payload.request.AddTagEntryRequest;
 import com.yudaiyaguchi.helloalonebackend.repository.DictionaryRepository;
@@ -42,8 +41,8 @@ public class DictionaryController {
 
     @GetMapping("/")
     public ResponseEntity<?> getDictionryEntities(HttpServletRequest request) {
-        String jwt = parseJwt(request);
-        String userId = this.getUserId(jwt);
+        String jwt = jwtUtils.parseJwt(request);
+        String userId = userRepository.getUserId(jwt);
         List<DictionaryEntry> dictionaryEntryList = null;
         try {
             dictionaryEntryList = this.dictionaryRepository.getDictionaryEntries(userId);
@@ -55,8 +54,8 @@ public class DictionaryController {
 
     @GetMapping("/{dictionaryEntryId}")
     public ResponseEntity<?> getDictionaryEntity(HttpServletRequest request, @Valid String dictionaryEntryId) {
-        String jwt = parseJwt(request);
-        String userId = this.getUserId(jwt);
+        String jwt = jwtUtils.parseJwt(request);
+        String userId = userRepository.getUserId(jwt);
         DictionaryEntry dictionaryEntry = null;
         try {
             dictionaryEntry = this.dictionaryRepository.getDictionaryEntryById(userId, dictionaryEntryId);
@@ -66,10 +65,10 @@ public class DictionaryController {
         return ResponseEntity.ok(dictionaryEntry);
     }
     
-    @PostMapping("/add")
+    @PostMapping("/insert")
     public ResponseEntity<?> addDictionaryEntity(HttpServletRequest request, @Valid @RequestBody AddDictionaryEntryRequest entRequest) {
-    	String jwt = parseJwt(request);
-		String userId = this.getUserId(jwt);
+    	String jwt = jwtUtils.parseJwt(request);
+		String userId = userRepository.getUserId(jwt);
 		DictionaryEntry entry = new DictionaryEntry();
 		entry.setTitle(entRequest.getTitle());
 		entry.setTitle_japanese(entRequest.getTitle_japanese());
@@ -80,39 +79,16 @@ public class DictionaryController {
 		try {
 			entry = this.dictionaryRepository.addDictionaryEntry(userId, entry);
 		} catch (Exception e) {
-			LOGGER.info("error adding redord for user: {} entry: {}, Error: {}", userId, entry, e);
+			LOGGER.info("error adding record for user: {} entry: {}, Error: {}", userId, entry, e);
 		}
 		
 		return ResponseEntity.ok(entry);
     }
-
-    private String parseJwt(HttpServletRequest request) {
-        String headerAuth = request.getHeader("Authorization");
-
-        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
-            return headerAuth.substring(7, headerAuth.length());
-        }
-        return null;
-    }
-
-    private String getUserId(String jwt) {
-        LOGGER.info("jwt token for My dictionary: :{}", jwt);
-        String username = jwtUtils.getUserNameFromJwtToken(jwt);
-        User user = null;
-        try {
-            user = this.userRepository.findByUsername(username);
-        } catch (Exception e) {
-            LOGGER.error("error getting user: {}", e);
-        }
-        String userId = user.getId();
-        LOGGER.info("userId : {}", userId);
-        return userId;
-    }
     
     @GetMapping("/tags")
     public ResponseEntity<?> getTags(HttpServletRequest request) {
-    	String jwt = parseJwt(request);
-    	String userId = this.getUserId(jwt);
+    	String jwt = jwtUtils.parseJwt(request);
+    	String userId = userRepository.getUserId(jwt);
     	List<TagEntry> tags = null;
     	try {
     		tags = this.dictionaryRepository.getTagEntries(userId);
@@ -124,8 +100,8 @@ public class DictionaryController {
     
     @PostMapping("/add-tag")
     public ResponseEntity<?> addTagEntity(HttpServletRequest request, @Valid @RequestBody AddTagEntryRequest entRequest) {
-    	String jwt = parseJwt(request);
-    	String userId = this.getUserId(jwt);
+    	String jwt = jwtUtils.parseJwt(request);
+    	String userId = userRepository.getUserId(jwt);
     	TagEntry entry = new TagEntry();
     	entry.setName(entRequest.getName());
     	try {
